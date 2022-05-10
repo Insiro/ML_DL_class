@@ -106,6 +106,14 @@ class DecisionNode:
                 return (False, 1-self.probabilities[caseIndex])
         return self.childs[caseIndex].predict(record)
 
+    def print_tree(self, depth, trigger):
+        shift = ""
+        for i in range(depth):
+            shift += "\t"
+        print(shift + self.feature, trigger)
+        for i in range(self.childs.__len__()):
+            self.childs[i].print_tree(depth+1, self.triggers[i])
+
 
 def generateDecisionTree(df: pd.DataFrame):
     # region select Root Node by Stemp Information gain
@@ -146,6 +154,7 @@ if __name__ == '__main__':
 
     tree = generateDecisionTree(df)
     # testing
+    tree.print_tree(0, "")
     predicted, probability = tree.predict(
         {FEATURES[0]: "Suburban", FEATURES[1]: "Detached", FEATURES[2]: "High", FEATURES[3]: False})
-    print("{}% {}".format(probability, predicted))
+    print("{}% {}".format(probability * 100, predicted))
