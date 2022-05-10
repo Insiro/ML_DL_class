@@ -82,6 +82,8 @@ class DecisionNode:
             # endregion
         for child in self.childs:
             child.select_child()
+        # remove local df after all child selected for reduce memory
+        self.df = None
         return
 
     def predict(self, record: dict[str, Any]) -> Tuple[Any, float]:
