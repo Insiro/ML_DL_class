@@ -124,6 +124,7 @@ def generateDecisionTree(df: pd.DataFrame):
     # endregion
     # select childs for build tree
     root.select_child()
+    return root
 
 
 if __name__ == '__main__':
