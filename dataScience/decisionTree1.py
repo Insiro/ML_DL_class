@@ -1,5 +1,6 @@
 # set able type hinting self embeding class
 from __future__ import annotations
+
 # type hint library
 from typing import Any, Tuple
 import pandas as pd
@@ -45,10 +46,10 @@ class DecisionNode:
             true_count = filtered[filtered[TARGET]].count()[0]
             # region partial entropy calc
             filtered_count = filtered.count()[0]
-            if (true_count == 0):  # the case of probability is 0
+            if true_count == 0:  # the case of probability is 0
                 self.probabilities.append(0)
                 continue
-            probability = true_count/filtered_count
+            probability = true_count / filtered_count
             self.probabilities.append(probability)
             # log(A/B) = Log A- B, for make simple log caluculation devided
             entropy -= probability * (log2(true_count) - log2(filtered_count))
@@ -70,8 +71,7 @@ class DecisionNode:
             candidateNodeEntropy = float("inf")
             for feature in self.features:
                 # filtering nextFeatures for not containing self feature
-                subFeatures = [
-                    f for f in self.features if f != feature]
+                subFeatures = [f for f in self.features if f != feature]
                 node = DecisionNode(next_df, subFeatures, feature)
                 node_entropy = node.entropy
                 if candidateNodeEntropy > node_entropy:
@@ -95,7 +95,7 @@ class DecisionNode:
                 if self.probabilities[index] > 0.5:
                     return (True, self.probabilities[index])
                 else:
-                    return (False, 1-self.probabilities[index])
+                    return (False, 1 - self.probabilities[index])
             return self.childs[index].predict(record)
         caseIndex = self.triggers.index(record[self.feature])
         # when no case in data go to most probability
@@ -105,7 +105,7 @@ class DecisionNode:
                 return (True, self.probabilities[caseIndex])
             # case False, return probability of false
             else:
-                return (False, 1-self.probabilities[caseIndex])
+                return (False, 1 - self.probabilities[caseIndex])
         return self.childs[caseIndex].predict(record)
 
     def print_tree(self, depth, trigger):
@@ -114,7 +114,7 @@ class DecisionNode:
             shift += "\t"
         print(shift + self.feature, trigger)
         for i in range(self.childs.__len__()):
-            self.childs[i].print_tree(depth+1, self.triggers[i])
+            self.childs[i].print_tree(depth + 1, self.triggers[i])
 
 
 def generateDecisionTree(df: pd.DataFrame):
@@ -137,26 +137,102 @@ def generateDecisionTree(df: pd.DataFrame):
     return root
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     # region Generage DataFrame
     df = pd.DataFrame()
-    df[FEATURES[0]] = ["Suburban", "Suburban", "Rural", "Urban", "Urban", "Urban",
-                       "Rural", "Suburban", "Suburban", "Urban", "Suburban", "Rural", "Rural", "Urban"]
-    df[FEATURES[1]] = ["Detached", "Detached", "Detached", "Semi-detached", "Semi-detached", "Semi-detached",
-                       "Semi-detached", "Terrace", "Semi-detached", "Terrace", "Terrace", "Terrace", "Detached", "Terrace"]
-    df[FEATURES[2]] = ["High", "High", "High", "High", "Low", "Low",
-                       "Low", "High", "Low", "Low", "Low", "High", "Low", "High"]
+    df[FEATURES[0]] = [
+        "Suburban",
+        "Suburban",
+        "Rural",
+        "Urban",
+        "Urban",
+        "Urban",
+        "Rural",
+        "Suburban",
+        "Suburban",
+        "Urban",
+        "Suburban",
+        "Rural",
+        "Rural",
+        "Urban",
+    ]
+    df[FEATURES[1]] = [
+        "Detached",
+        "Detached",
+        "Detached",
+        "Semi-detached",
+        "Semi-detached",
+        "Semi-detached",
+        "Semi-detached",
+        "Terrace",
+        "Semi-detached",
+        "Terrace",
+        "Terrace",
+        "Terrace",
+        "Detached",
+        "Terrace",
+    ]
+    df[FEATURES[2]] = [
+        "High",
+        "High",
+        "High",
+        "High",
+        "Low",
+        "Low",
+        "Low",
+        "High",
+        "Low",
+        "Low",
+        "Low",
+        "High",
+        "Low",
+        "High",
+    ]
     # True : Yes
-    df[FEATURES[3]] = [False, True, False, False, False,
-                       True, True, False, False, False, True, True, False, True]
+    df[FEATURES[3]] = [
+        False,
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        False,
+        False,
+        True,
+        True,
+        False,
+        True,
+    ]
     # Responsed : True
-    df[TARGET] = [False, False, True, True, True, False,
-                  True, False, True, True, True, True, True, False]
+    df[TARGET] = [
+        False,
+        False,
+        True,
+        True,
+        True,
+        False,
+        True,
+        False,
+        True,
+        True,
+        True,
+        True,
+        True,
+        False,
+    ]
     # endregion
 
     tree = generateDecisionTree(df)
     # testing
     tree.print_tree(0, "")
     predicted, probability = tree.predict(
-        {FEATURES[0]: "Suburban", FEATURES[1]: "Detached", FEATURES[2]: "High", FEATURES[3]: False})
+        {
+            FEATURES[0]: "Suburban",
+            FEATURES[1]: "Detached",
+            FEATURES[2]: "High",
+            FEATURES[3]: False,
+        }
+    )
     print("{}% {}".format(probability * 100, predicted))

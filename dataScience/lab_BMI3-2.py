@@ -1,4 +1,4 @@
-from typing import List, Any, Tuple
+from typing import List, Tuple
 from enum import Enum
 from sklearn.linear_model import LinearRegression
 import pandas as pd
@@ -21,7 +21,7 @@ class Group(Enum):
 def data_loader(path: str):
     # Load DataFrame From Path
     loaded = pd.read_csv(path)
-    # Region Dirty Data of Weight and Height To NA
+    # region Dirty Data of Weight and Height To NA
     # Height under 10 or over 1000
     loaded.loc[500 < loaded[Height], Height] = np.nan
     loaded.loc[10 > loaded[Height], Height] = np.nan
@@ -71,7 +71,7 @@ def regression(df: pd.DataFrame):
     weight: pd.Series = for_train[Weight]
     height: pd.Series = for_train[Height]
 
-    # Region Repace Na of Height by regression
+    # region Repace Na of Height by regression
     if weight.shape[0] != 0:
         req_predict = df.dropna(subset=[Weight], how="any")[Weight]
         predicted = directional_regression(weight, height, req_predict)
@@ -80,7 +80,7 @@ def regression(df: pd.DataFrame):
             df[Height][index] = predicted[index]
     # endregion
 
-    # Region Repace Na of Weight by regression
+    # region Repace Na of Weight by regression
     if height.shape[0] != 0:
         req_predict = df.dropna(subset=[Height], how="any")[Height]
         predicted = directional_regression(height, weight, req_predict)
@@ -132,4 +132,3 @@ control("Gender Grouped", Group.Gender, plt_colors)
 
 # plt for BMI Grouped
 control("BMI Grouped", Group.BMI, plt_colors)
-

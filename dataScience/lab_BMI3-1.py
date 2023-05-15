@@ -1,9 +1,5 @@
 import pandas as pd
-import numpy as np
-import sklearn as skl
 from matplotlib import pyplot as plt
-
-
 
 
 loaded = pd.read_csv("./bmi_data_lab3.csv")
